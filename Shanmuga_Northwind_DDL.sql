@@ -1083,11 +1083,13 @@ alter table products add constraint Fk_products_categoryid  foreign key (categor
 /* adding orderid as primary key as it is the unique key and not null column and to enfore the data integrity contraint*/
 alter table orders add constraint pk_orderid  primary key (orderid);
 
-/* adding customerid,employeeid,shipperid as foriegn key and  to enfore the  referential integrity contraint from customer,employee,shipper table*/
+/* adding customerid,employeeid,shipperid as foriegn key and  to enfore the  referential integrity contraint from customer,employee,shipper table */
 
 alter table orders add constraint Fk_orders_customerid  foreign key (customerid) references customers(customerid);
 alter table orders add constraint Fk_orders_employeeid  foreign key (employeeid) references employees(employeeid);
 alter table orders add constraint Fk_orders_shipperid  foreign key (shipperid) references shippers(shipperid);
+
+alter table order_details add constraint pk_composite  primary key (orderid,productid);
 
 /* adding orderid,productid as foriegn key and  to enfore the  referential integrity contraint from orders,products table*/
 alter table order_details add constraint Fk_orderdetails_orderid  foreign key (orderid) references orders(orderid);
@@ -1098,6 +1100,8 @@ alter table customers add constraint pk_customerid  primary key (customerid);
 
 /* adding employeeid as primary key as it is the unique key and not null column and to enfore the data integrity contraint*/
 alter table employees add constraint pk_employeeid  primary key (employeeid);
+
+alter table employees add constraint Fk_reportsto  foreign key (reportsto) references employees(employeeid);
 
 /* adding shipperid as primary key as it is the unique key and not null column and to enfore the data integrity contraint*/
 alter table shippers add constraint pk_shipperid  primary key (shipperid);
