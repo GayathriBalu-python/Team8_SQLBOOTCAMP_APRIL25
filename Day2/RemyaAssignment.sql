@@ -17,7 +17,7 @@ DROP COLUMN linkedin_profile;
 
 ---2) Querying (Select)
 -- Retrieve the employee name and title of all employees
-SELECT "employeeName"  
+SELECT "employeeName" ,"title" 
 FROM employees;
     
 -- Find all unique unit prices of products
