@@ -1,7 +1,8 @@
 /* 1.   Categorize products by stock status
 (Display product_name, a new column stock_status whose values are based on below condition
  units_in_stock = 0  is 'Out of Stock'
-       units_in_stock < 20  is 'Low Stock') */
+ units_in_stock < 20  is 'Low Stock') */
+
 SELECT
 	PRODUCT_NAME,
 	UNITS_IN_STOCK,
