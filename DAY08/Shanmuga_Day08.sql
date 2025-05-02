@@ -75,11 +75,42 @@ select * from products where category_id =1;
 /*3.     Create a regular view which will have below details (Need to do joins):
 Employee_id,Employee_full_name,Title,Territory_id,territory_description,region_description*/
 
+select * from employees;
+select * from employee_territories;
+select * from territories;
+select * from region;
 
 create view vw_Employee as 
 (
-select e.Employee_id, e.first_name || ' ' e.last_name as Employee_full_name,e.Title,t.Territory_id,t.territory_description,r.region_description
-from employee e
+select e.Employee_id, e.first_name || ' ' || e.last_name as Employee_full_name,
+e.Title,t.Territory_id,t.territory_description,r.region_description
+from employees e
+inner join employee_territories  et on et.employee_id = e.employee_id
+inner join territories t on et.territory_id = t.territory_id
+inner join region r on t.region_id = r.region_id
+);
 
+select * from vw_Employee
 
+/*4.     Create a recursive CTE based on Employee Hierarchy*/
+
+with Recursive cte_employeehierachy as (
+
+select employee_id, first_name,last_name, reports_to, 0 as level
+from employees e
+where reports_to is null
+
+union all
+
+select 
+e.employee_id, e.first_name,e.last_name,e.reports_to,eh.level +1 
+from employees e 
+inner join cte_employeehierachy eh on e.reports_to = eh.employee_id
 )
+select
+level,
+  employee_id,
+   first_name || ' ' || last_name AS employee_name
+from cte_employeehierachy 
+order by 
+   level,employee_id;
