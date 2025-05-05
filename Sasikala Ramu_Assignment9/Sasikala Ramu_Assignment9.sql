@@ -14,37 +14,27 @@ CREATE TABLE product_price_audit (
 CREATE OR REPLACE FUNCTION fn_product_price_audit()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO product_price_audit (
-        product_id,
-        product_name,
-        old_price,
-        new_price
-    )
+    INSERT INTO product_price_audit ( product_id, product_name, old_price, new_price)
     VALUES (
-        OLD.product_id,
-        OLD.product_name,
-        OLD.unit_price,
-        NEW.unit_price
-    );
+        OLD.product_id,OLD.product_name,OLD.unit_price,NEW.unit_price);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 --Create trigger function:
-CREATE TRIGGER trg_product_price_update
-AFTER UPDATE OF unit_price ON products
-FOR EACH ROW
-WHEN (OLD.unit_price IS DISTINCT FROM NEW.unit_price)
-EXECUTE FUNCTION fn_product_price_audit();
+CREATE TRIGGER trg_product_price_update 
+AFTER UPDATE OF unit_price ON products FOR EACH ROW
+WHEN (OLD.unit_price IS DISTINCT FROM NEW.unit_price) EXECUTE FUNCTION fn_product_price_audit();
 
 
 SELECT product_id, product_name, unit_price FROM products WHERE product_id = 1;
 
 -- Update price by 10% and Verify the audit log
 UPDATE products SET unit_price = unit_price * 1.10 WHERE product_id = 1;
-
-
 SELECT * FROM product_price_audit WHERE product_id = 1;
+
+
+
 
 --Q2) Create stored procedure  using IN and INOUT parameters to assign tasks to employees
 
@@ -64,15 +54,9 @@ CREATE OR REPLACE PROCEDURE assign_task(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO employee_tasks (employee_id, task_name)
-    VALUES (p_employee_id, p_task_name);
-    
-    SELECT COUNT(*) INTO p_task_count
-    FROM employee_tasks
-    WHERE employee_id = p_employee_id;
-    
-    RAISE NOTICE 'Task "%" assigned to employee %. Total tasks: %', 
-        p_task_name, p_employee_id, p_task_count;
+    INSERT INTO employee_tasks (employee_id, task_name) VALUES (p_employee_id, p_task_name);    
+    SELECT COUNT(*) INTO p_task_count FROM employee_tasks WHERE employee_id = p_employee_id;    
+    RAISE NOTICE 'Task "%" assigned to employee %. Total tasks: %', p_task_name, p_employee_id, p_task_count;
 END;
 $$;
 
